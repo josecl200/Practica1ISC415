@@ -33,7 +33,7 @@ public class Main {
         System.out.println("forms con POST="+String.valueOf(posts));
         inputsEnLosFormEnElDoc(doc);
 
-        peticionAlDoc(doc);
+        peticionAlDoc(doc,url);
     }
 
     private static int lineasEnElDoc(String doc){
@@ -48,7 +48,7 @@ public class Main {
         return ele.size();
     }
     private static int imagenesEnElDoc(Document doc){
-        Elements ele = doc.select("img");
+        Elements ele = doc.select("p img");
 
         return ele.size();
     }
@@ -68,11 +68,21 @@ public class Main {
         }
         return;
     }
-    private static void peticionAlDoc(Document doc){
+    private static void peticionAlDoc(Document doc, String url){
         Elements postForms = doc.select("form[method=\"POST\"]");
+        String newstr = url;
+        if (null != url && url.length() > 0 )
+        {
+            int endIndex = url.lastIndexOf("/");
+            if (endIndex != -1 || endIndex != 6 || endIndex != 7)
+            {
+                newstr = url.substring(0, endIndex);
+            }
+        }
+
         for (Element el:postForms) {
             try {
-                Document postReq = Jsoup.connect(el.attr("action")).header("matricula", "20160138")
+                Document postReq = Jsoup.connect(newstr + el.attr("action")).header("matricula", "20160138")
                         .data("asignatura","practica1").post();
                 System.out.println("Respuesta: ");
                 System.out.println(postReq.html());
