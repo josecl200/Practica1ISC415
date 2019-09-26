@@ -1,6 +1,7 @@
 package logic;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -24,6 +25,13 @@ public class Main {
         System.out.println("lineas="+String.valueOf(lineas));
         int parrafos = parrafosEnElDoc(doc);
         System.out.println("parrafos="+String.valueOf(parrafos));
+        int imagenes = imagenesEnElDoc(doc);
+        System.out.println("imagenes="+String.valueOf(imagenes));
+        int gets = formsEnElDoc(doc,"GET");
+        System.out.println("forms con GET="+String.valueOf(gets));
+        int posts = formsEnElDoc(doc,"POST");
+        System.out.println("forms con POST="+String.valueOf(posts));
+        inputsEnLosFormEnElDoc(doc);
     }
 
     private static int lineasEnElDoc(String doc){
@@ -37,7 +45,37 @@ public class Main {
 
         return ele.size();
     }
-    private
+    private static int imagenesEnElDoc(Document doc){
+        Elements ele = doc.select("img");
 
+        return ele.size();
+    }
+    private static int formsEnElDoc(Document doc,String method){
+        Elements ele = doc.select("form[method =\"" +method+"\"]");
 
+        return ele.size();
+    }
+    private static void inputsEnLosFormEnElDoc(Document doc){
+        Elements ele = doc.select("form");
+        for (int i=0;i<ele.size();i++){
+            Elements elem = ele.select("input");
+            System.out.println("Form No. "+String.valueOf(i+1));
+            for(Element el: elem){
+                System.out.println("Input tipo: " + el.attr("type"));
+            }
+        }
+        return;
+    }
+    private static void peticionAlDoc(Document doc){
+        Elements postForms = doc.select("form[method=\"POST\"]");
+        for (Element el:postForms) {
+            try {
+                Document postReq = Jsoup.connect(el.attr("action")).header("matricula", "20160138").data("asignatura","practica1").post();
+                System.out.println("Respuesta: ");
+                System.out.println(postReq.html());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
