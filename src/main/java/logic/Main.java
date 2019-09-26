@@ -32,6 +32,8 @@ public class Main {
         int posts = formsEnElDoc(doc,"POST");
         System.out.println("forms con POST="+String.valueOf(posts));
         inputsEnLosFormEnElDoc(doc);
+
+        peticionAlDoc(doc);
     }
 
     private static int lineasEnElDoc(String doc){
@@ -70,7 +72,8 @@ public class Main {
         Elements postForms = doc.select("form[method=\"POST\"]");
         for (Element el:postForms) {
             try {
-                Document postReq = Jsoup.connect(el.attr("action")).header("matricula", "20160138").data("asignatura","practica1").post();
+                Document postReq = Jsoup.connect(el.attr("action")).header("matricula", "20160138")
+                        .data("asignatura","practica1").post();
                 System.out.println("Respuesta: ");
                 System.out.println(postReq.html());
             } catch (IOException e) {
